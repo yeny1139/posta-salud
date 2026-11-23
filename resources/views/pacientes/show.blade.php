@@ -18,6 +18,15 @@
 
         <footer class="acciones">
             <a href="{{ route('pacientes.edit', $paciente) }}" role="button">Editar datos</a>
+
+            <form method="POST" action="{{ route('pacientes.destroy', $paciente) }}"
+                  onsubmit="return confirm('¿Seguro que deseas eliminar este paciente? Esta acción no se puede deshacer.');"
+                  style="display: inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="secondary">Eliminar</button>
+            </form>
+
             <a href="{{ route('pacientes.index') }}">Volver</a>
         </footer>
     </article>
