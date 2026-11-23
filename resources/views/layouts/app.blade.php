@@ -14,7 +14,7 @@
             </ul>
             <ul>
                 <li><a href="{{ route('inicio') }}">Inicio</a></li>
-                <li><a href="#">Pacientes</a></li>
+                <li><a href="{{ route('pacientes.index') }}">Pacientes</a></li>
                 <li><a href="#">Personal médico</a></li>
                 <li><a href="#">Citas</a></li>
                 <li><a href="#">Atenciones</a></li>

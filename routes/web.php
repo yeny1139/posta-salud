@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\PacienteController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('inicio');
 })->name('inicio');
+
+Route::resource('pacientes', PacienteController::class);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
