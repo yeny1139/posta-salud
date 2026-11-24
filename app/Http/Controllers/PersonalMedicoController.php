@@ -83,7 +83,10 @@ class PersonalMedicoController extends Controller
      */
     public function edit(PersonalMedico $personalMedico)
     {
-        //
+        return view('personal-medico.edit', [
+            'medico'  => $personalMedico,
+            'cuentas' => $this->cuentasDisponibles($personalMedico),
+        ]);
     }
 
     /**
@@ -91,7 +94,24 @@ class PersonalMedicoController extends Controller
      */
     public function update(UpdatePersonalMedicoRequest $request, PersonalMedico $personalMedico)
     {
-        //
+        $personalMedico->update($request->validated());
+
+        return redirect()->route('personal-medico.show', $personalMedico)
+            ->with('ok', 'Datos del profesional actualizados.');
+    }
+
+    public function cambiarEstado(PersonalMedico $personalMedico)
+    {
+        $personalMedico->update([
+            'activo' => ! $personalMedico->activo,
+        ]);
+
+        $mensaje = $personalMedico->activo
+            ? 'Profesional reactivado.'
+            : 'Profesional desactivado.';
+
+        return redirect()->route('personal-medico.show', $personalMedico)
+            ->with('ok', $mensaje);
     }
 
     // Cuentas de rol personal_medico que aún no tienen ficha
