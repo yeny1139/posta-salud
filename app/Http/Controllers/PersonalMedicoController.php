@@ -66,7 +66,16 @@ class PersonalMedicoController extends Controller
      */
     public function show(PersonalMedico $personalMedico)
     {
-        //
+        $personalMedico->load([
+            'user',
+            'citas' => fn ($q) => $q->with('paciente')
+                ->orderByDesc('fecha_hora')
+                ->limit(10),
+        ]);
+
+        return view('personal-medico.show', [
+            'medico' => $personalMedico,
+        ]);
     }
 
     /**
