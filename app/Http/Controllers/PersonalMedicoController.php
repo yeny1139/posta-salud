@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PersonalMedico;
+use App\Models\User;
 use App\Http\Requests\StorePersonalMedicoRequest;
 use App\Http\Requests\UpdatePersonalMedicoRequest;
 use Illuminate\Http\Request;
@@ -37,12 +38,16 @@ class PersonalMedicoController extends Controller
         return view('personal-medico.index',
             compact('personal', 'buscar', 'especialidad', 'estado'));
     }
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        return view('personal-medico.create', [
+            'medico'  => new PersonalMedico(),
+            'cuentas' => $this->cuentasDisponibles(),
+        ]);
     }
 
     /**
@@ -50,7 +55,10 @@ class PersonalMedicoController extends Controller
      */
     public function store(StorePersonalMedicoRequest $request)
     {
-        //
+        PersonalMedico::create($request->validated());
+
+        return redirect()->route('personal-medico.index')
+            ->with('ok', 'Profesional registrado correctamente.');
     }
 
     /**
@@ -75,5 +83,20 @@ class PersonalMedicoController extends Controller
     public function update(UpdatePersonalMedicoRequest $request, PersonalMedico $personalMedico)
     {
         //
+    }
+
+    // Cuentas de rol personal_medico que aún no tienen ficha
+    // (más la del propio profesional, cuando se edita)
+    private function cuentasDisponibles(?PersonalMedico $medico = null)
+    {
+        return User::where('rol', 'personal_medico')
+            ->where(function ($q) use ($medico) {
+                $q->whereDoesntHave('personalMedico');
+                if ($medico?->user_id) {
+                    $q->orWhere('id', $medico->user_id);
+                }
+            })
+            ->orderBy('name')
+            ->get();
     }
 }
